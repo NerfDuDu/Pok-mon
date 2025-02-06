@@ -1,6 +1,6 @@
 import json
 from PySide6.QtWidgets import (QGraphicsView, QMainWindow, QWidget, QApplication, 
-                               QHBoxLayout, QPushButton, QVBoxLayout, QLabel)
+                               QHBoxLayout, QPushButton, QVBoxLayout, QLabel, QGridLayout)
 from PySide6.QtGui import QImage, QPixmap
 from PySide6.QtCore import QUrl, Slot
 from PySide6.QtNetwork import QNetworkAccessManager, QNetworkReply, QNetworkRequest
@@ -42,23 +42,45 @@ class MENUS(QWidget):
         
         self.layoutPrincipal.addLayout(self.layoutView)
         self.layoutPrincipal.addLayout(self.layoutButtons)
+
 class SAKA_DHO(QWidget):
     def __init__(self):
         super().__init__()
 
         self.layoutsakado = QVBoxLayout(self)
-        
-        self.layoutView = QHBoxLayout()
-        self.view = QGraphicsView()
-        self.layoutView.addWidget(self.view)
 
+        #Vue
+        self.vue = QWidget()
+        self.gridlayout = QGridLayout()
+        self.vue.setLayout(self.gridlayout)
+    
+        self.gridlayout.addWidget(QLabel("0,0"), 0, 0) 
+        self.gridlayout.addWidget(QLabel("0,1"), 0, 1)  
+        self.gridlayout.addWidget(QLabel("1,1"), 1, 1)
+
+        self.layoutsakado.addWidget(self.vue)
+
+        #Menu
+        self.menu = QWidget()
+        self.menu.setFixedHeight(40)
         self.layoutButtons = QHBoxLayout()
+        self.menu.setLayout(self.layoutButtons)
+
         self.btn_menu = QPushButton("Menu")
-
         self.layoutButtons.addWidget(self.btn_menu)
+        self.btn_prec = QPushButton("<")
+        self.layoutButtons.addWidget(self.btn_prec)
+        self.btn_suiv = QPushButton(">")
+        self.layoutButtons.addWidget(self.btn_suiv)
 
-        self.layoutsakado.addLayout(self.layoutView)
-        self.layoutsakado.addLayout(self.layoutButtons)
+         
+        self.layoutsakado.addWidget(self.menu)  
+
+        #self.layoutsakado.addLayout(self.layoutView)
+        #self.layoutsakado.addLayout(self.layoutButtons)
+
+
+        
 
 class MyWindow(QMainWindow):
     def __init__(self):
@@ -76,7 +98,6 @@ class MyWindow(QMainWindow):
         self.centralWidget.btn_menu.clicked.connect(self.menu)
 
 
-    
 
 #with open('pokedex.json', encoding="utf8") as f:
 #    contenu = json.load(f)
@@ -87,5 +108,7 @@ if __name__ == "__main__":
     app = QApplication([])
     win = MyWindow()
     win.show()
-    win.resize(500, 500)
+    #win.resize(700, 700)
     app.exec()
+
+#addWidget ( widget , ligne , colonne , rowSpan , columnSpan [ , alignement=Qt.Alignment() ] )

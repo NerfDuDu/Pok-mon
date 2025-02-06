@@ -53,10 +53,30 @@ class SAKA_DHO(QWidget):
         self.vue = QWidget()
         self.gridlayout = QGridLayout()
         self.vue.setLayout(self.gridlayout)
-    
-        self.gridlayout.addWidget(QLabel("0,0"), 0, 0) 
-        self.gridlayout.addWidget(QLabel("0,1"), 0, 1)  
-        self.gridlayout.addWidget(QLabel("1,1"), 1, 1)
+            #ligne 0
+        self.gridlayout.addWidget(QLabel("1"), 0, 0) 
+        self.gridlayout.addWidget(QLabel("2"), 0, 1)
+        self.gridlayout.addWidget(QLabel("3"), 0, 2)
+        self.gridlayout.addWidget(QLabel("4"), 0, 3)
+        self.gridlayout.addWidget(QLabel("5"), 0, 4)
+            #ligne 1
+        self.gridlayout.addWidget(QLabel("6"), 1, 0)
+        self.gridlayout.addWidget(QLabel("7"), 1, 1)
+        self.gridlayout.addWidget(QLabel("8"), 1, 2)
+        self.gridlayout.addWidget(QLabel("9"), 1, 3)
+        self.gridlayout.addWidget(QLabel("10"), 1, 4)
+            #ligne 2
+        self.gridlayout.addWidget(QLabel("11"), 2, 0)
+        self.gridlayout.addWidget(QLabel("12"), 2, 1)
+        self.gridlayout.addWidget(QLabel("13"), 2, 2)
+        self.gridlayout.addWidget(QLabel("14"), 2, 3)
+        self.gridlayout.addWidget(QLabel("15"), 2, 4)
+            #ligne 3
+        self.gridlayout.addWidget(QLabel("16"), 3, 0)
+        self.gridlayout.addWidget(QLabel("17"), 3, 1)
+        self.gridlayout.addWidget(QLabel("18"), 3, 2)
+        self.gridlayout.addWidget(QLabel("19"), 3, 3)
+        self.gridlayout.addWidget(QLabel("20"), 3, 4)
 
         self.layoutsakado.addWidget(self.vue)
 

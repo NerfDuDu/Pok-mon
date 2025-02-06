@@ -20,17 +20,11 @@ class Label_image(QLabel):
         pixmap = QPixmap.fromImage(image)
         self.setPixmap(pixmap)
 
-
-class MyWindow(QMainWindow):
+class MENUS(QWidget):
     def __init__(self):
         super().__init__()
-        self.menu()
-           
-    def menu(self):
-        self.centraleWidget = QWidget()
-        self.setCentralWidget(self.centraleWidget)
 
-        self.layoutPrincipal = QVBoxLayout(self.centraleWidget)
+        self.layoutPrincipal = QVBoxLayout(self)
 
         self.layoutView = QHBoxLayout()
         self.view = QGraphicsView()
@@ -48,17 +42,12 @@ class MyWindow(QMainWindow):
         
         self.layoutPrincipal.addLayout(self.layoutView)
         self.layoutPrincipal.addLayout(self.layoutButtons)
+class SAKA_DHO(QWidget):
+    def __init__(self):
+        super().__init__()
 
-
-        self.btn_inventaire.clicked.connect(self.inventaire)
-
-    def inventaire(self):
+        self.layoutsakado = QVBoxLayout(self)
         
-        self.centraleWidget = QWidget()
-        self.setCentralWidget(self.centraleWidget)
-
-        self.layoutPrincipal = QVBoxLayout(self.centraleWidget)
-
         self.layoutView = QHBoxLayout()
         self.view = QGraphicsView()
         self.layoutView.addWidget(self.view)
@@ -68,11 +57,26 @@ class MyWindow(QMainWindow):
 
         self.layoutButtons.addWidget(self.btn_menu)
 
-        self.layoutPrincipal.addLayout(self.layoutView)
-        self.layoutPrincipal.addLayout(self.layoutButtons)
+        self.layoutsakado.addLayout(self.layoutView)
+        self.layoutsakado.addLayout(self.layoutButtons)
+
+class MyWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.menu()
+    
+    def menu(self):
+        self.centralWidget = MENUS()
+        self.setCentralWidget(self.centralWidget)
+        self.centralWidget.btn_inventaire.clicked.connect(self.inventaire)
+    
+    def inventaire(self):
+        self.centralWidget = SAKA_DHO()
+        self.setCentralWidget(self.centralWidget)
+        self.centralWidget.btn_menu.clicked.connect(self.menu)
 
 
-        self.btn_menu.clicked.connect(self.menu)
+    
 
 #with open('pokedex.json', encoding="utf8") as f:
 #    contenu = json.load(f)

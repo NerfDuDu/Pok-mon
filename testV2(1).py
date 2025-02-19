@@ -1,14 +1,12 @@
 import json
 from PySide6.QtWidgets import (QGraphicsView, QMainWindow, QWidget, QApplication, 
                                QHBoxLayout, QPushButton, QVBoxLayout, QLabel, 
-                               QGraphicsScene, QGraphicsPixmapItem, QGraphicsRectItem)
+                               QGraphicsScene, QGraphicsPixmapItem, QGraphicsRectItem,QGridLayout)
 from PySide6.QtGui import QImage, QPixmap
 from PySide6.QtCore import QUrl, Slot, QRandomGenerator, Signal,Qt
 from PySide6.QtNetwork import QNetworkAccessManager, QNetworkReply, QNetworkRequest
 
 class Scene(QGraphicsScene):
-    
-    
     def __init__(self, parent=None):
         super().__init__(parent)
         self.fond=QGraphicsRectItem(0,0,0,0)
@@ -18,59 +16,26 @@ class Scene(QGraphicsScene):
     def imge(self):
         with open('pokedex.json', encoding="utf8") as f:
             contenu = json.load(f)
-        pokemon = contenu[51]["image"]["thumbnail"]
-        self.fond()
-        return pokemon
-        
+        pokemon = contenu[289]["image"]["thumbnail"]
+        return pokemon       
 
+    def get_type(self):
+        with open('pokedex.json', encoding="utf8") as f:
+            contenu = json.load(f)
+        pokemon_type = contenu[289]["type"][0]
+        return pokemon_type
+    
+    def get_nom(self):
+        with open('pokedex.json', encoding="utf8") as f:
+            contenu = json.load(f)
+        nom_pokemon = contenu[68]["name"]["french"]
+        return nom_pokemon
+    
     def ajoute(self,url: str):
         self.manager = QNetworkAccessManager()
         self.manager.finished.connect(self.chargement_fini)
         url = QUrl.fromUserInput(url)
         self.manager.get(QNetworkRequest(url))
-        
-
-    def get_type(self):
-        with open('pokedex.json', encoding="utf8") as f:
-            contenu = json.load(f)
-        pokemon_type = contenu[51]["type"]
-        return pokemon_type
-    def get_nom(self):
-        with open('pokedex.json', encoding="utf8") as f:
-            contenu = json.load(f)
-        nom_pokemon = contenu[51]["name"]["french"]
-        return nom_pokemon
-    
-    def fond(self):
-        type = Scene.get_type(self)
-        for elemt in type:
-            if elemt == "Grass" or elemt == "Bug":
-                pixmap = QPixmap("images/pokemon-carte-herbe.png")
-                pixmap_rezise = pixmap.scaled(300, 400,Qt.KeepAspectRatio)
-            elif elemt == "Normal":
-                pixmap = QPixmap("images/pokemon-carte-normale.png")
-                pixmap_rezise = pixmap.scaled(300, 400,Qt.KeepAspectRatio)
-            elif elemt == "Water":
-                pixmap = QPixmap("images/pokemon-carte-eau.png")
-                pixmap_rezise = pixmap.scaled(300, 400,Qt.KeepAspectRatio)
-            elif elemt == "Fire":
-                pixmap = QPixmap("imagespokemon-carte-feu.png")
-                pixmap_rezise = pixmap.scaled(300, 400,Qt.KeepAspectRatio)
-            elif elemt == "Electric":
-                pixmap = QPixmap("images/pokemon-carte-elec.png")
-                pixmap_rezise = pixmap.scaled(300, 400,Qt.KeepAspectRatio)
-            elif elemt == "Psychic" or elemt == "Dark":
-                pixmap = QPixmap("images/pokemon-carte-psy.png")
-                pixmap_rezise = pixmap.scaled(300, 400,Qt.KeepAspectRatio)
-            elif elemt == "Combat" or elemt == "Ground":
-                pixmap = QPixmap("images/pokemon-carte-combat.png")
-                pixmap_rezise = pixmap.scaled(300, 400,Qt.KeepAspectRatio)
-
-        self.pixmap_item = QGraphicsPixmapItem(pixmap_rezise)
-        self.scene.addItem(self.pixmap_item)
-        self.view.setScene(self.scene)
-        self.layoutView.addWidget(self.view)
-        self.resize(pixmap.width(), pixmap.height())
 
     @Slot(QNetworkReply)
     def chargement_fini(self, reponse: QNetworkReply):
@@ -85,6 +50,16 @@ class MyWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.menu()
+    
+    def menu(self):
+        self.centralWidget = MENUS()
+        self.setCentralWidget(self.centralWidget)
+        self.centralWidget.btn_inventaire.clicked.connect(self.inventaire)
+    
+    def inventaire(self):
+        self.centralWidget = SAKA_DHO()
+        self.setCentralWidget(self.centralWidget)
+        self.centralWidget.btn_menu.clicked.connect(self.menu)
 
     def menu(self):
         self.centraleWidget = QWidget()
@@ -105,40 +80,117 @@ class MyWindow(QMainWindow):
         self.layoutButtons.addWidget(self.btn_ouvrir)
         self.layoutButtons.addWidget(self.btn_inventaire)
 
+        type = Scene.get_type(self)
+        if type == "Grass" or type == "Bug":
+            pixmap = QPixmap("images/pokemon-carte-herbe.png")
+            pixmap_rezise = pixmap.scaled(300, 400,Qt.KeepAspectRatio)
+        elif type == "Normal":
+            pixmap = QPixmap("images/pokemon-carte-normale.png")
+            pixmap_rezise = pixmap.scaled(300, 400,Qt.KeepAspectRatio)
+        elif type == "Water":
+            pixmap = QPixmap("images/pokemon-carte-eau.png")
+            pixmap_rezise = pixmap.scaled(300, 400,Qt.KeepAspectRatio)
+        elif type == "Fire":
+            pixmap = QPixmap("imagespokemon-carte-feu.png")
+            pixmap_rezise = pixmap.scaled(300, 400,Qt.KeepAspectRatio)
+        elif type == "Electric":
+            pixmap = QPixmap("images/pokemon-carte-elec.png")
+            pixmap_rezise = pixmap.scaled(300, 400,Qt.KeepAspectRatio)
+        elif type == "Psychic" or type == "Dark" or type == "Poison" or type == "Fairy" or type == "Ghost":
+            pixmap = QPixmap("images/pokemon-carte-psy.png")
+            pixmap_rezise = pixmap.scaled(300, 400,Qt.KeepAspectRatio)
+        elif type == "Fighting" or type == "Ground" or type == "Rock":
+            pixmap = QPixmap("images/pokemon-carte-combat.png")
+            pixmap_rezise = pixmap.scaled(300, 400,Qt.KeepAspectRatio)
+        
+        self.pixmap_item = QGraphicsPixmapItem(pixmap_rezise)
+        self.scene.addItem(self.pixmap_item)
+        self.view.setScene(self.scene)
+        self.layoutView.addWidget(self.view)
+        self.resize(pixmap.width(), pixmap.height())
         
         self.layoutPrincipal.addLayout(self.layoutView)
         self.layoutPrincipal.addLayout(self.layoutButtons)
-        self.resize(500,500)
+        self.resize(800,700)
 
         self.btn_inventaire.clicked.connect(self.inventaire)
 
        
 
-    def inventaire(self):
-        
-        self.centraleWidget = QWidget()
-        self.setCentralWidget(self.centraleWidget)
+class SAKA_DHO(QWidget):
+    def __init__(self):
+        super().__init__()
 
-        self.layoutPrincipal = QVBoxLayout(self.centraleWidget)
+        self.layoutsakado = QVBoxLayout(self)
+
+        #Vue
+        self.vue = QWidget()
+        self.gridlayout = QGridLayout()
+        self.vue.setLayout(self.gridlayout)
+            #ligne 0
+        self.gridlayout.addWidget(QLabel("1"), 0, 0) 
+        self.gridlayout.addWidget(QLabel("2"), 0, 1)
+        self.gridlayout.addWidget(QLabel("3"), 0, 2)
+        self.gridlayout.addWidget(QLabel("4"), 0, 3)
+        self.gridlayout.addWidget(QLabel("5"), 0, 4)
+            #ligne 1
+        self.gridlayout.addWidget(QLabel("6"), 1, 0)
+        self.gridlayout.addWidget(QLabel("7"), 1, 1)
+        self.gridlayout.addWidget(QLabel("8"), 1, 2)
+        self.gridlayout.addWidget(QLabel("9"), 1, 3)
+        self.gridlayout.addWidget(QLabel("10"), 1, 4)
+            #ligne 2
+        self.gridlayout.addWidget(QLabel("11"), 2, 0)
+        self.gridlayout.addWidget(QLabel("12"), 2, 1)
+        self.gridlayout.addWidget(QLabel("13"), 2, 2)
+        self.gridlayout.addWidget(QLabel("14"), 2, 3)
+        self.gridlayout.addWidget(QLabel("15"), 2, 4)
+            #ligne 3
+        self.gridlayout.addWidget(QLabel("16"), 3, 0)
+        self.gridlayout.addWidget(QLabel("17"), 3, 1)
+        self.gridlayout.addWidget(QLabel("18"), 3, 2)
+        self.gridlayout.addWidget(QLabel("19"), 3, 3)
+        self.gridlayout.addWidget(QLabel("20"), 3, 4)
+
+        self.layoutsakado.addWidget(self.vue)
+
+        #Menu
+        self.menu = QWidget()
+        self.menu.setFixedHeight(40)
+        self.layoutButtons = QHBoxLayout()
+        self.menu.setLayout(self.layoutButtons)
+
+        self.btn_menu = QPushButton("Menu")
+        self.layoutButtons.addWidget(self.btn_menu)
+        self.btn_prec = QPushButton("<")
+        self.layoutButtons.addWidget(self.btn_prec)
+        self.btn_suiv = QPushButton(">")
+        self.layoutButtons.addWidget(self.btn_suiv)
+
+         
+        self.layoutsakado.addWidget(self.menu)
+class MENUS(QWidget):
+    def __init__(self):
+        super().__init__()
+
+        self.layoutPrincipal = QVBoxLayout(self)
 
         self.layoutView = QHBoxLayout()
         self.view = QGraphicsView()
         self.layoutView.addWidget(self.view)
 
         self.layoutButtons = QHBoxLayout()
-        self.btn_menu = QPushButton("Menu")
+        self.btn_deck = QPushButton("Deck")
+        self.btn_inventaire = QPushButton("Inventaire")
+        self.btn_ouvrir = QPushButton("Ouvrir")
 
-        self.layoutButtons.addWidget(self.btn_menu)
+        self.layoutButtons.addWidget(self.btn_deck)
+        self.layoutButtons.addWidget(self.btn_ouvrir)
+        self.layoutButtons.addWidget(self.btn_inventaire)
 
+        
         self.layoutPrincipal.addLayout(self.layoutView)
         self.layoutPrincipal.addLayout(self.layoutButtons)
-        self.resize(500,500)
-
-
-        self.btn_menu.clicked.connect(self.menu)
-
-
-
 #for i in range(15):
 #    print(contenu[i]["name"]["french"])
 
@@ -146,5 +198,5 @@ if __name__ == "__main__":
     app = QApplication([])
     win = MyWindow()
     win.show()
-    win.resize(500, 500)
+    win.resize(800, 700)
     app.exec()
